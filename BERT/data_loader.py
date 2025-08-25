@@ -1,6 +1,4 @@
 import os
-# 设置Hugging Face镜像站，必须在导入transformers之前设置
-
 import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import BertTokenizer
@@ -78,8 +76,7 @@ def prepare_data(batch_size=16, max_length=512, model_name='bert-base-uncased',
         tuple: (train_loader, val_loader, test_loader, tokenizer)
     """
     print("正在加载IMDB数据集...")
-    
-    # 设置缓存目录
+
     if cache_dir is None:
         cache_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
     

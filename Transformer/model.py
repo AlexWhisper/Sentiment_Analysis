@@ -148,16 +148,20 @@ def binary_accuracy(preds: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     correct = (rounded_preds == y).float()
     return correct.sum() / len(correct)
 
-def save_model_info(model: TransformerSentimentAnalyzer, vocab_stoi: Dict[str, int], vocab_itos: List[str], model_dir: str = './saved_models'):
+def save_model_info(model: TransformerSentimentAnalyzer, vocab_stoi: Dict[str, int], vocab_itos: List[str], model_dir: str = None):
     """
     保存模型结构信息和词汇表
     
     Args:
-        model: LSTM模型实例
+        model: Transformer模型实例
         vocab_stoi: 词汇表（字符串到索引的映射）
         vocab_itos: 词汇表（索引到字符串的映射）
         model_dir: 模型保存目录
     """
+    # 设置默认保存目录到根目录的saved_models/transformer文件夹
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'transformer')
+    
     # 创建模型目录
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
@@ -184,7 +188,7 @@ def save_model_info(model: TransformerSentimentAnalyzer, vocab_stoi: Dict[str, i
     print(f"   - 词汇表: vocab.json")
     print(f"   - PyTorch模型: model.pth")
 
-def load_model_info(model_dir: str = './saved_models') -> tuple:
+def load_model_info(model_dir: str = None) -> tuple:
     """
     从保存的文件中加载模型和词汇表
     
@@ -194,6 +198,10 @@ def load_model_info(model_dir: str = './saved_models') -> tuple:
     Returns:
         (model, vocab_stoi, vocab_itos): 加载的模型和词汇表
     """
+    # 设置默认加载目录到根目录的saved_models/transformer文件夹
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'transformer')
+    
     # 加载模型结构信息
     with open(os.path.join(model_dir, 'model_structure.json'), 'r', encoding='utf-8') as f:
         model_info = json.load(f)

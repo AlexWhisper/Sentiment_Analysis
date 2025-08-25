@@ -85,30 +85,17 @@ def load_imdb_data(test_size: float = 0.2, seed: int = 22) -> Tuple:
     """
     print("正在加载IMDB数据集...")
     
-    # 尝试从本地缓存加载数据集
+    # 加载IMDB数据集，统一使用根目录的data文件夹
+    import os
+    cache_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
     try:
-        # 首先尝试离线模式加载
-        import os
-        cache_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
         imdb_dataset = load_dataset("imdb", cache_dir=cache_dir)
         print("成功从本地缓存加载数据集")
-    except Exception as e1:
-        print(f"从本地缓存加载失败: {e1}")
-        try:
-            # 尝试使用绝对路径的本地缓存
-            cache_dir = r"e:\Project\Python\digital_recognition-main\Sentiment_Analysis\data"
-            imdb_dataset = load_dataset("imdb", cache_dir=cache_dir)
-            print("成功从指定缓存目录加载数据集")
-        except Exception as e2:
-            print(f"从指定缓存目录加载失败: {e2}")
-            try:
-                # 最后尝试在线下载
-                print("尝试在线下载数据集...")
-                imdb_dataset = load_dataset("imdb")
-                print("成功在线下载数据集")
-            except Exception as e3:
-                print(f"在线下载也失败: {e3}")
-                raise ConnectionError(f"无法加载IMDB数据集。请检查网络连接或本地缓存。错误信息: {e3}")
+    except Exception as e:
+        print(f"从缓存加载失败: {e}")
+        print("尝试在线下载...")
+        imdb_dataset = load_dataset("imdb")
+        print("成功在线下载数据集")
     
     train_valid_dataset = imdb_dataset['train'].train_test_split(seed=seed, test_size=test_size)
     train_dataset = train_valid_dataset['train']

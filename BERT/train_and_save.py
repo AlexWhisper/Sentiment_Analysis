@@ -273,7 +273,7 @@ def main():
     best_model_state = None
     
     # 创建保存目录
-    save_dir = os.path.join(os.path.dirname(__file__), 'saved_models')
+    save_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'bert')
     os.makedirs(save_dir, exist_ok=True)
     
     # 开始训练

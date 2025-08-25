@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
 
-def load_imdb_data(cache_path='./data'):
+def load_imdb_data(cache_path=None):
     """
     Loads the IMDb dataset from Hugging Face, caching it locally.
 
@@ -14,6 +14,10 @@ def load_imdb_data(cache_path='./data'):
     Returns:
         tuple: A tuple containing the training and test datasets.
     """
+    # 设置默认缓存路径到根目录的data文件夹
+    if cache_path is None:
+        cache_path = os.path.join(os.path.dirname(__file__), '..', 'data')
+    
     if not os.path.exists(cache_path):
         os.makedirs(cache_path)
 

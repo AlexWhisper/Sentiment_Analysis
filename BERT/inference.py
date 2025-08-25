@@ -296,7 +296,10 @@ class BERTInference:
             print(f"分析文件时出错: {e}")
             return None
 
-def find_latest_model(model_dir='saved_models'):
+def find_latest_model(model_dir=None):
+
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'bert')
     """
     查找最新的模型文件
     

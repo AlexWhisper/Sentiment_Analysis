@@ -9,10 +9,19 @@ import torch
 from model import RNN
 import re
 
-def load_model_and_vocab(model_dir='./saved_models'):
+def load_model_and_vocab(model_dir=None):
     """
     Load the saved model and vocabulary.
+    
+    Args:
+        model_dir: Directory containing the saved model files
+        
+    Returns:
+        tuple: (network, vocab) - loaded model and vocabulary
     """
+    # 设置默认加载目录到根目录的saved_models/rnn文件夹
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'rnn')
     # Load model info
     with open(os.path.join(model_dir, 'model_info.json'), 'r') as f:
         model_info = json.load(f)
@@ -78,7 +87,7 @@ def main():
     print("=" * 60)
     
     # Check if saved model exists
-    model_dir = './saved_models'
+    model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'rnn')
     if not os.path.exists(os.path.join(model_dir, 'model_info.json')):
         print("No saved model found!")
         print("Please run 'train_and_save.py' first to train and save a model.")

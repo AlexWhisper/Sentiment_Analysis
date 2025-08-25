@@ -42,10 +42,14 @@ def collate_fn(batch, vocab, max_len=100):
     texts = pad_sequence(texts, batch_first=True, padding_value=vocab["<pad>"])
     return labels, texts
 
-def save_model_info(network, vocab, model_dir='./saved_models'):
+def save_model_info(network, vocab, model_dir=None):
     """
     Save the model and its configuration (including vocabulary).
     """
+    # 设置默认保存目录到根目录的saved_models/rnn文件夹
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'rnn')
+    
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
 
