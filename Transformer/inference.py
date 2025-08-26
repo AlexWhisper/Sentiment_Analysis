@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Copyright (c) 2024-present, Mr. Yao.
+All rights reserved.
+
+This source code is licensed under the license found in the
+LICENSE file in the root directory of this source tree.
+"""
+#!/usr/bin/env python3
 """
 加载并使用保存的Transformer模型进行情感分析预测
 """
@@ -95,7 +104,7 @@ def interactive_prediction(model, vocab_stoi, tokenizer_func, UNK_IDX):
         tokenizer_func: 分词函数
         UNK_IDX: 未知词索引
     """
-    print("\n=" * 60)
+    print("\n" * 60)
     print("交互式情感分析预测")
     print("输入句子进行情感分析，输入 'quit' 退出")
     print("=" * 60)
@@ -129,7 +138,7 @@ def test_sample_predictions(model, vocab_stoi, tokenizer_func, UNK_IDX):
         tokenizer_func: 分词函数
         UNK_IDX: 未知词索引
     """
-    print("\n=" * 60)
+    print("\n" * 60)
     print("示例预测测试")
     print("=" * 60)
     
@@ -174,7 +183,7 @@ def analyze_model_vocabulary(vocab_stoi, vocab_itos):
         vocab_stoi: 词汇表（字符串到索引映射）
         vocab_itos: 词汇表（索引到字符串映射）
     """
-    print("\n=" * 60)
+    print("\n" * 60)
     print("词汇表分析")
     print("=" * 60)
     

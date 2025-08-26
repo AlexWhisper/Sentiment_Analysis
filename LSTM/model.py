@@ -1,3 +1,7 @@
+# Copyright (c) 2025 NIS Lab, Hebei Normal University
+# Author: Wang Minghu <wangminghu41@163.com>
+# Internal Use Only. Unauthorized distribution is strictly prohibited.
+
 import torch
 import torch.nn as nn
 import torch.optim as optim

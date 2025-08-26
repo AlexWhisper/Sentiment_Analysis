@@ -1,3 +1,9 @@
+# Copyright (c) 2024, backwards (https://github.com/backwards-s)
+# All rights reserved.
+#
+# This source code is licensed under the MIT-style license found in the
+# LICENSE file in the root directory of this source tree.
+
 #!/usr/bin/env python3
 """
 IMDB情感分析完整示例

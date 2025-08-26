@@ -1,3 +1,7 @@
+# Copyright (c) 2025 NIS Lab, Hebei Normal University
+# Author: Wang Minghu <wangminghu41@163.com>
+# Internal Use Only. Unauthorized distribution is strictly prohibited.
+
 import os
 # 设置Hugging Face镜像站，必须在导入transformers之前设置
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'

@@ -1,3 +1,7 @@
+# Copyright (c) 2025 NIS Lab, Hebei Normal University
+# Author: Wang Minghu <wangminghu41@163.com>
+# Internal Use Only. Unauthorized distribution is strictly prohibited.
+
 #!/usr/bin/env python3
 """
 加载并使用保存的LSTM模型进行情感分析预测
