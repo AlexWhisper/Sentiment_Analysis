@@ -3,3 +3,4 @@ datasets
 transformers
 matplotlib
 tqdm
+spacy
