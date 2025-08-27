@@ -106,10 +106,7 @@ def load_imdb_data(test_size: float = 0.2, seed: int = 22) -> Tuple:
     valid_dataset = train_valid_dataset['test']
     test_dataset = imdb_dataset['test']
     
-    print(f"数据集加载完成:")
-    print(f"  训练集: {len(train_dataset)} 样本")
-    print(f"  验证集: {len(valid_dataset)} 样本")
-    print(f"  测试集: {len(test_dataset)} 样本")
+    print(f"数据集加载完成: 训练集{len(train_dataset)}样本, 验证集{len(valid_dataset)}样本, 测试集{len(test_dataset)}样本")
     
     return train_dataset, valid_dataset, test_dataset
 
@@ -232,12 +229,3 @@ def prepare_data(max_vocab_size: int = 25000, batch_size: int = 32, test_size: f
         'PAD_IDX': PAD_IDX,
         'vocab_size': len(vocab_stoi)
     }
-
-if __name__ == "__main__":
-    # 测试数据加载功能
-    print("测试数据加载功能...")
-    data_components = prepare_data()
-    print("\n数据加载测试完成！")
-    print(f"词汇表大小: {data_components['vocab_size']}")
-    print(f"UNK索引: {data_components['UNK_IDX']}")
-    print(f"PAD索引: {data_components['PAD_IDX']}")
