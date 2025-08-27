@@ -3,16 +3,13 @@
 # Internal Use Only. Unauthorized distribution is strictly prohibited.
 
 import os
-# 设置Hugging Face镜像站，必须在导入transformers之前设置
-
 import torch
 import json
 from transformers import BertTokenizer
-import argparse
 from datetime import datetime
 
 # 导入自定义模块
-from model import BERTSentimentAnalyzer, load_model_info
+from model import BERTSentimentAnalyzer
 
 class BERTInference:
     """
@@ -162,40 +159,7 @@ class BERTInference:
         except Exception as e:
             return {'error': f'预测时出错: {str(e)}'}
     
-    def predict_batch(self, texts, max_length=512, batch_size=16):
-        """
-        批量预测
-        
-        Args:
-            texts (list): 文本列表
-            max_length (int): 最大序列长度
-            batch_size (int): 批次大小
-            
-        Returns:
-            list: 预测结果列表
-        """
-        if not self.model or not self.tokenizer:
-            raise ValueError("模型未加载，请先调用load_model()")
-        
-        results = []
-        
-        print(f"开始批量预测 {len(texts)} 个文本...")
-        
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i:i+batch_size]
-            batch_results = []
-            
-            for text in batch_texts:
-                result = self.predict_single(text, max_length)
-                batch_results.append(result)
-            
-            results.extend(batch_results)
-            
-            # 显示进度
-            processed = min(i + batch_size, len(texts))
-            print(f"已处理: {processed}/{len(texts)}")
-        
-        return results
+
     
     def interactive_predict(self):
         """
@@ -205,15 +169,12 @@ class BERTInference:
             print("错误: 模型未加载")
             return
         
-        print("\n=" * 50)
         print("BERT情感分析 - 交互式预测")
-        print("=" * 50)
         print("输入文本进行情感分析，输入 'quit' 退出")
-        print("-" * 50)
         
         while True:
             try:
-                text = input("\n请输入文本: ").strip()
+                text = input("请输入文本: ").strip()
                 
                 if text.lower() in ['quit', 'exit', 'q']:
                     print("退出预测模式")
@@ -224,86 +185,25 @@ class BERTInference:
                     continue
                 
                 # 进行预测
-                result = self.predict_single(text, return_details=True)
+                result = self.predict_single(text)
                 
                 if 'error' in result:
                     print(f"错误: {result['error']}")
                     continue
                 
                 # 显示结果
-                print(f"\n预测结果:")
-                print(f"  文本: {result['text'][:100]}{'...' if len(result['text']) > 100 else ''}")
-                print(f"  情感: {result['sentiment']}")
-                print(f"  概率: {result['probability']:.4f}")
-                print(f"  置信度: {result['confidence']}")
-                
-                # 添加解释
-                if result['confidence'] == 'low':
-                    print(f"  注意: 置信度较低（< {self.confidence_threshold}），结果可能不准确")
+                print(f"情感: {result['sentiment']}")
+                print(f"概率: {result['probability']:.4f}")
                 
             except KeyboardInterrupt:
-                print("\n\n退出预测模式")
+                print("退出预测模式")
                 break
             except Exception as e:
                 print(f"发生错误: {e}")
     
-    def analyze_file(self, file_path, output_path=None, max_length=512):
-        """
-        分析文件中的文本
-        
-        Args:
-            file_path (str): 输入文件路径
-            output_path (str): 输出文件路径
-            max_length (int): 最大序列长度
-        """
-        if not os.path.exists(file_path):
-            print(f"错误: 文件不存在 {file_path}")
-            return
-        
-        print(f"正在分析文件: {file_path}")
-        
-        try:
-            # 读取文件
-            with open(file_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            
-            # 清理文本
-            texts = [line.strip() for line in lines if line.strip()]
-            
-            if not texts:
-                print("文件中没有有效文本")
-                return
-            
-            # 批量预测
-            results = self.predict_batch(texts, max_length)
-            
-            # 统计结果
-            positive_count = sum(1 for r in results if r.get('prediction') == 1)
-            negative_count = sum(1 for r in results if r.get('prediction') == 0)
-            error_count = sum(1 for r in results if 'error' in r)
-            
-            print(f"\n分析完成:")
-            print(f"  总文本数: {len(texts)}")
-            print(f"  正面情感: {positive_count}")
-            print(f"  负面情感: {negative_count}")
-            print(f"  错误数: {error_count}")
-            
-            # 保存结果
-            if output_path:
-                with open(output_path, 'w', encoding='utf-8') as f:
-                    json.dump(results, f, ensure_ascii=False, indent=2)
-                print(f"结果已保存到: {output_path}")
-            
-            return results
-            
-        except Exception as e:
-            print(f"分析文件时出错: {e}")
-            return None
+
 
 def find_latest_model(model_dir=None):
-
-    if model_dir is None:
-        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'bert')
     """
     查找最新的模型文件
     
@@ -313,6 +213,9 @@ def find_latest_model(model_dir=None):
     Returns:
         str: 最新模型文件路径
     """
+    if model_dir is None:
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'saved_models', 'bert')
+    
     if not os.path.exists(model_dir):
         return None
     
@@ -326,61 +229,15 @@ def find_latest_model(model_dir=None):
     
     return os.path.join(model_dir, model_files[0])
 
-def main():
-    """
-    主函数
-    """
-    parser = argparse.ArgumentParser(description='BERT情感分析推理')
-    parser.add_argument('--model', type=str, help='模型文件路径')
-    parser.add_argument('--text', type=str, help='要分析的文本')
-    parser.add_argument('--file', type=str, help='要分析的文件路径')
-    parser.add_argument('--output', type=str, help='输出文件路径')
-    parser.add_argument('--interactive', action='store_true', help='交互式模式')
-    parser.add_argument('--max_length', type=int, default=256, help='最大序列长度')
+if __name__ == "__main__":
+    # 直接运行交互式模式
+    print("BERT情感分析推理")
     
-    args = parser.parse_args()
+    # 创建推理器并运行
+    model_path = find_latest_model()
+    if model_path:
+        print(f"找到模型: {model_path}")
     
-    # 查找模型文件
-    model_path = args.model
-    if not model_path:
-        model_path = find_latest_model()
-        if model_path:
-            print(f"自动找到模型: {model_path}")
-    
-    # 创建推理器
     inferencer = BERTInference(model_path=model_path)
     inferencer.load_model()
-    
-    # 根据参数执行不同操作
-    if args.interactive:
-        # 交互式模式
-        inferencer.interactive_predict()
-    elif args.text:
-        # 单文本预测
-        result = inferencer.predict_single(args.text, args.max_length, return_details=True)
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    elif args.file:
-        # 文件分析
-        inferencer.analyze_file(args.file, args.output, args.max_length)
-    else:
-        # 默认进入交互式模式
-        inferencer.interactive_predict()
-
-if __name__ == "__main__":
-    # 如果没有命令行参数，直接运行交互式模式
-    import sys
-    if len(sys.argv) == 1:
-        print("BERT情感分析推理")
-        print("使用方法:")
-        print("  python inference.py --interactive  # 交互式模式")
-        print("  python inference.py --text '文本'   # 单文本预测")
-        print("  python inference.py --file 文件路径  # 文件分析")
-        print("\n正在启动交互式模式...")
-        
-        # 创建推理器并运行
-        model_path = find_latest_model()
-        inferencer = BERTInference(model_path=model_path)
-        inferencer.load_model()
-        inferencer.interactive_predict()
-    else:
-        main()
+    inferencer.interactive_predict()

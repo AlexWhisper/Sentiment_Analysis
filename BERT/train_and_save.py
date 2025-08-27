@@ -3,13 +3,10 @@
 # Internal Use Only. Unauthorized distribution is strictly prohibited.
 
 import os
-# 设置Hugging Face镜像站，必须在导入transformers之前设置
-
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 import time
 from datetime import datetime
@@ -17,10 +14,6 @@ from datetime import datetime
 # 导入自定义模块
 from model import BERTSentimentAnalyzer, binary_accuracy, save_model_info
 from data_loader import prepare_data
-
-# 设置matplotlib支持中文
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
-plt.rcParams['axes.unicode_minus'] = False
 
 def train_epoch(model, data_loader, optimizer, scheduler, device, epoch):
     """
@@ -156,48 +149,7 @@ def evaluate_epoch(model, data_loader, device, epoch, phase='Val'):
     
     return avg_loss, avg_accuracy
 
-def plot_training_history(train_losses, train_accuracies, val_losses, val_accuracies, save_path=None):
-    """
-    绘制训练历史
-    
-    Args:
-        train_losses: 训练损失列表
-        train_accuracies: 训练准确率列表
-        val_losses: 验证损失列表
-        val_accuracies: 验证准确率列表
-        save_path: 保存路径
-    """
-    epochs = range(1, len(train_losses) + 1)
-    
-    plt.figure(figsize=(15, 5))
-    
-    # 绘制损失
-    plt.subplot(1, 2, 1)
-    plt.plot(epochs, train_losses, 'b-', label='训练损失', linewidth=2)
-    plt.plot(epochs, val_losses, 'r-', label='验证损失', linewidth=2)
-    plt.title('训练和验证损失', fontsize=14, fontweight='bold')
-    plt.xlabel('Epoch', fontsize=12)
-    plt.ylabel('损失', fontsize=12)
-    plt.legend(fontsize=11)
-    plt.grid(True, alpha=0.3)
-    
-    # 绘制准确率
-    plt.subplot(1, 2, 2)
-    plt.plot(epochs, train_accuracies, 'b-', label='训练准确率', linewidth=2)
-    plt.plot(epochs, val_accuracies, 'r-', label='验证准确率', linewidth=2)
-    plt.title('训练和验证准确率', fontsize=14, fontweight='bold')
-    plt.xlabel('Epoch', fontsize=12)
-    plt.ylabel('准确率', fontsize=12)
-    plt.legend(fontsize=11)
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    
-    if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"训练历史图已保存到: {save_path}")
-    
-    plt.show()
+
 
 def main():
     """
@@ -212,25 +164,14 @@ def main():
     WARMUP_RATIO = 0.1  # 预热步数比例
     WEIGHT_DECAY = 0.01  # 权重衰减
     
-    print("=" * 60)
-    print("BERT情感分析模型训练")
-    print("=" * 60)
-    print(f"模型: {MODEL_NAME}")
-    print(f"训练轮数: {EPOCHS}")
-    print(f"学习率: {LEARNING_RATE}")
-    print(f"批次大小: {BATCH_SIZE}")
-    print(f"最大序列长度: {MAX_LENGTH}")
-    print("=" * 60)
+    print("开始BERT情感分析模型训练")
     
     # 设置设备
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"使用设备: {device}")
-    if torch.cuda.is_available():
-        print(f"GPU: {torch.cuda.get_device_name(0)}")
-        print(f"GPU内存: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
     
     # 准备数据
-    print("\n准备数据...")
+    print("准备数据...")
     train_loader, val_loader, test_loader, tokenizer = prepare_data(
         batch_size=BATCH_SIZE,
         max_length=MAX_LENGTH,
@@ -238,26 +179,13 @@ def main():
     )
     
     # 创建模型
-    print("\n创建模型...")
+    print("创建模型...")
     model = BERTSentimentAnalyzer(model_name=MODEL_NAME, num_classes=2)
     model.to(device)
-    
-    # 打印模型信息
-    model_info = model.get_model_info()
-    print("\n模型信息:")
-    for key, value in model_info.items():
-        if isinstance(value, float):
-            print(f"  {key}: {value:.2f}")
-        else:
-            print(f"  {key}: {value}")
     
     # 计算训练步数
     num_training_steps = len(train_loader) * EPOCHS
     num_warmup_steps = int(num_training_steps * WARMUP_RATIO)
-    
-    print(f"\n训练配置:")
-    print(f"  总训练步数: {num_training_steps}")
-    print(f"  预热步数: {num_warmup_steps}")
     
     # 设置优化器和调度器
     model.setup_optimizer(
@@ -281,12 +209,11 @@ def main():
     os.makedirs(save_dir, exist_ok=True)
     
     # 开始训练
-    print("\n开始训练...")
+    print("开始训练...")
     start_time = time.time()
     
     for epoch in range(EPOCHS):
-        print(f"\nEpoch {epoch+1}/{EPOCHS}")
-        print("-" * 40)
+        print(f"Epoch {epoch+1}/{EPOCHS}")
         
         # 训练阶段
         train_loss, train_acc = train_epoch(
@@ -305,19 +232,18 @@ def main():
         val_accuracies.append(val_acc)
         
         # 打印epoch结果
-        print(f"\nEpoch {epoch+1} 结果:")
-        print(f"  训练 - 损失: {train_loss:.4f}, 准确率: {train_acc:.4f}")
-        print(f"  验证 - 损失: {val_loss:.4f}, 准确率: {val_acc:.4f}")
+        print(f"训练损失: {train_loss:.4f}, 训练准确率: {train_acc:.4f}")
+        print(f"验证损失: {val_loss:.4f}, 验证准确率: {val_acc:.4f}")
         
         # 保存最佳模型
         if val_acc > best_val_accuracy:
             best_val_accuracy = val_acc
             best_model_state = model.state_dict().copy()
-            print(f"  ✓ 新的最佳验证准确率: {best_val_accuracy:.4f}")
+            print(f"新的最佳验证准确率: {best_val_accuracy:.4f}")
     
     # 训练完成
     training_time = time.time() - start_time
-    print(f"\n训练完成! 总用时: {training_time:.2f}秒")
+    print(f"训练完成! 总用时: {training_time:.2f}秒")
     print(f"最佳验证准确率: {best_val_accuracy:.4f}")
     
     # 加载最佳模型进行测试
@@ -325,11 +251,10 @@ def main():
         model.load_state_dict(best_model_state)
     
     # 测试阶段
-    print("\n开始测试...")
+    print("开始测试...")
     test_loss, test_acc = evaluate_epoch(model, test_loader, device, EPOCHS-1, 'Test')
-    print(f"\n测试结果:")
-    print(f"  测试损失: {test_loss:.4f}")
-    print(f"  测试准确率: {test_acc:.4f}")
+    print(f"测试损失: {test_loss:.4f}")
+    print(f"测试准确率: {test_acc:.4f}")
     
     # 保存模型
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -353,7 +278,7 @@ def main():
             'test_loss': test_loss
         }
     }, model_path)
-    print(f"\n模型已保存到: {model_path}")
+    print(f"模型已保存到: {model_path}")
     
     # 保存模型信息
     info_path = os.path.join(save_dir, f'bert_model_info_{timestamp}.json')
@@ -372,14 +297,9 @@ def main():
     }
     save_model_info(model, info_path, additional_info)
     
-    # 绘制训练历史
-    plot_path = os.path.join(save_dir, f'bert_training_history_{timestamp}.png')
-    plot_training_history(train_losses, train_accuracies, val_losses, val_accuracies, plot_path)
-    
-    print("\n训练完成！")
+    print("训练完成！")
     print(f"模型文件: {model_path}")
     print(f"信息文件: {info_path}")
-    print(f"训练图表: {plot_path}")
 
 if __name__ == "__main__":
     main()

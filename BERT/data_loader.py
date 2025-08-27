@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import BertTokenizer
 from datasets import load_dataset
 import numpy as np
-from typing import List, Tuple, Dict
+from typing import List
 
 class IMDBDataset(Dataset):
     """
@@ -160,89 +160,3 @@ def prepare_data(batch_size=16, max_length=512, model_name='bert-base-uncased',
     print(f"数据加载器创建完成，批次大小: {batch_size}")
     
     return train_loader, val_loader, test_loader, tokenizer
-
-def analyze_text_lengths(texts: List[str], tokenizer: BertTokenizer, sample_size: int = 1000):
-    """
-    分析文本长度分布，帮助确定合适的max_length
-    
-    Args:
-        texts (List[str]): 文本列表
-        tokenizer (BertTokenizer): 分词器
-        sample_size (int): 采样大小
-        
-    Returns:
-        dict: 长度统计信息
-    """
-    print(f"分析文本长度分布（采样 {sample_size} 个文本）...")
-    
-    # 随机采样
-    if len(texts) > sample_size:
-        indices = np.random.choice(len(texts), sample_size, replace=False)
-        sample_texts = [texts[i] for i in indices]
-    else:
-        sample_texts = texts
-    
-    lengths = []
-    for text in sample_texts:
-        tokens = tokenizer.encode(text, add_special_tokens=True)
-        lengths.append(len(tokens))
-    
-    lengths = np.array(lengths)
-    
-    stats = {
-        'mean': np.mean(lengths),
-        'median': np.median(lengths),
-        'std': np.std(lengths),
-        'min': np.min(lengths),
-        'max': np.max(lengths),
-        'percentile_90': np.percentile(lengths, 90),
-        'percentile_95': np.percentile(lengths, 95),
-        'percentile_99': np.percentile(lengths, 99)
-    }
-    
-    print("文本长度统计:")
-    for key, value in stats.items():
-        print(f"  {key}: {value:.2f}")
-    
-    # 建议max_length
-    suggested_max_length = int(stats['percentile_95'])
-    print(f"\n建议的max_length: {suggested_max_length}")
-    print(f"这将覆盖95%的文本，平衡效率和信息保留")
-    
-    return stats
-
-if __name__ == "__main__":
-    # 测试数据加载
-    print("测试BERT数据加载器...")
-    
-    try:
-        # 准备数据
-        train_loader, val_loader, test_loader, tokenizer = prepare_data(
-            batch_size=8,
-            max_length=256
-        )
-        
-        # 测试一个批次
-        print("\n测试数据批次:")
-        for batch in train_loader:
-            print(f"input_ids shape: {batch['input_ids'].shape}")
-            print(f"attention_mask shape: {batch['attention_mask'].shape}")
-            print(f"labels shape: {batch['labels'].shape}")
-            
-            # 显示第一个样本的部分信息
-            print(f"\n第一个样本:")
-            print(f"input_ids: {batch['input_ids'][0][:20]}...")  # 显示前20个token
-            print(f"attention_mask: {batch['attention_mask'][0][:20]}...")  # 显示前20个mask
-            print(f"label: {batch['labels'][0]}")
-            
-            # 解码第一个样本
-            decoded_text = tokenizer.decode(batch['input_ids'][0], skip_special_tokens=True)
-            print(f"解码文本: {decoded_text[:100]}...")  # 显示前100个字符
-            
-            break
-        
-        print("\n数据加载器测试成功！")
-        
-    except Exception as e:
-        print(f"测试时出现错误: {e}")
-        print("请确保已安装所需依赖: pip install transformers datasets")

@@ -1,13 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Copyright (c) 2024-present, Mr. Yao.
-All rights reserved.
+# Copyright (c) 2025 NIS Lab, Hebei Normal University
+# Author: Wang Minghu <wangminghu41@163.com>
+# Internal Use Only. Unauthorized distribution is strictly prohibited.
 
-This source code is licensed under the license found in the
-LICENSE file in the root directory of this source tree.
-"""
-#!/usr/bin/env python3
 """
 IMDB情感分析完整示例
 使用PyTorch实现的LSTM神经网络进行情感分析

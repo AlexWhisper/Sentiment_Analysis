@@ -1,12 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Copyright (c) 2024-present, Mr. Yao.
-All rights reserved.
-
-This source code is licensed under the license found in the
-LICENSE file in the root directory of this source tree.
-"""
+# Copyright (c) 2025 NIS Lab, Hebei Normal University
+# Author: Wang Minghu <wangminghu41@163.com>
+# Internal Use Only. Unauthorized distribution is strictly prohibited.
 import torch
 import torch.nn as nn
 import torch.optim as optim
