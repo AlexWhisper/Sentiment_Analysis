@@ -2,11 +2,11 @@
 
 这是一个使用 PyTorch 实现的完整 IMDB 电影评论情感分析项目，采用 Transformer 神经网络进行二分类任务。项目包含从数据加载、模型定义、训练到推理的完整流程。
 
-## 🎯 项目概述
+## 项目概述
 
 本项目实现了一个基于 Transformer 的情感分析模型，用于判断电影评论的情感倾向（正面/负面）。使用经典的 IMDB 数据集进行训练和测试，项目采用模块化设计，代码结构清晰，适合学习和理解 Transformer 神经网络在自然语言处理中的应用。
 
-## 📁 项目结构
+## 项目结构
 
 ```
 Transformer/
@@ -24,7 +24,7 @@ Transformer/
 
 ```
 
-## 🚀 快速开始
+## 快速开始
 
 ### 1. 环境准备
 
@@ -70,7 +70,7 @@ python inference.py
 - 进行情感分析预测
 - 示例测试和准确率统计
 
-## 🧠 模型架构
+## 模型架构
 
 ### Transformer 网络结构
 - **词嵌入层**: 将词汇转换为密集向量表示
@@ -94,7 +94,7 @@ python inference.py
 - **批次大小**: 32
 - **训练轮数**: 100（可配置）
 
-## 📊 功能特性
+## 功能特性
 
 ### 数据处理 (`data_loader.py`)
 - 自动下载 IMDB 数据集
@@ -123,7 +123,7 @@ python inference.py
 - 预测结果展示
 - 示例测试和准确率统计
 
-## 🔧 技术实现
+## 技术实现
 
 ### 核心技术
 - **PyTorch**: 深度学习框架
@@ -140,7 +140,7 @@ python inference.py
 - 灵活的模型配置选项
 - 示例预测测试
 
-## 📈 性能表现
+## 性能表现
 
 在标准 IMDB 测试集上，模型通常能达到：
 - **训练准确率**: 85-90%
@@ -148,7 +148,7 @@ python inference.py
 - **测试准确率**: 82-87%
 - **训练时间**: 约 10-30 分钟（取决于硬件配置和数据大小）
 
-## 🛠️ 自定义配置
+## 自定义配置
 
 ### 调整训练参数
 在 `train_and_save.py` 的 `main()` 函数中修改：
@@ -174,7 +174,7 @@ data_components = prepare_data(
 )
 ```
 
-## 🐛 常见问题
+## 常见问题
 
 ### Q: 运行时提示 "No module named 'torch'"
 **A**: 请确保已正确安装 PyTorch：
@@ -201,7 +201,7 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 ### Q: 推理时提示找不到模型文件
 **A**: 请先运行 `train_and_save.py` 训练并保存模型。
 
-## 📚 学习资源
+## 学习资源
 
 - [PyTorch 官方教程](https://pytorch.org/tutorials/)
 - [IMDB 数据集介绍](https://ai.stanford.edu/~amaas/data/sentiment/)
@@ -209,7 +209,7 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 - [Hugging Face Datasets 文档](https://huggingface.co/docs/datasets/)
 - [spaCy 官方文档](https://spacy.io/)
 
-## 🎮 使用示例
+## 使用示例
 
 ### 训练模型
 ```bash
@@ -233,11 +233,11 @@ python inference.py
 ### 批量测试
 运行 `inference.py` 会自动进行示例测试，展示模型在各种句子上的表现。
 
-## 🤝 贡献指南
+## 贡献指南
 
 欢迎提交 Issue 和 Pull Request 来改进项目！
 
-## 📄 许可证
+## 许可证
 
 本项目采用 MIT 许可证，详见 LICENSE 文件。
 
