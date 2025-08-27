@@ -158,7 +158,7 @@ def main():
     # 超参数设置
     EPOCHS = 3  # BERT微调通常只需要少量epoch
     LEARNING_RATE = 2e-5  # BERT推荐的学习率
-    BATCH_SIZE = 16  # 根据GPU内存调整
+    BATCH_SIZE = 32  # 根据GPU内存调整
     MAX_LENGTH = 256  # 序列最大长度
     MODEL_NAME = 'bert-base-uncased'  # 预训练模型名称
     WARMUP_RATIO = 0.1  # 预热步数比例

@@ -64,7 +64,7 @@ class IMDBDataset(Dataset):
         }
 
 def prepare_data(batch_size=16, max_length=512, model_name='bert-base-uncased', 
-                 cache_dir=None, test_size=0.1, random_seed=42):
+                 cache_dir=None, test_size=0.2, random_seed=42):
     """
     准备IMDB数据集用于BERT训练
     
