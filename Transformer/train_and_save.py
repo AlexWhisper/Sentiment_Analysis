@@ -4,7 +4,7 @@
 
 """
 IMDB情感分析完整示例
-使用PyTorch实现的LSTM神经网络进行情感分析
+使用PyTorch实现的Transformer神经网络进行情感分析
 """
 
 import torch
@@ -94,7 +94,7 @@ def train_model(epochs=10, learning_rate=0.001, batch_size=32,
         learning_rate: 学习率
         batch_size: 批次大小
         embedding_dim: 词嵌入维度
-        hidden_dim: LSTM隐藏层维度
+        hidden_dim: Transformer隐藏层维度
         max_vocab_size: 词汇表最大大小
     """
     print("IMDB情感分析Transformer神经网络训练")

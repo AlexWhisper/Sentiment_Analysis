@@ -16,11 +16,12 @@ Transformer/
 ├── inference.py            # 模型加载和推理
 ├── requirements.txt        # 项目依赖
 ├── README.md               # 项目说明文档
-├── saved_models/           # 保存的模型文件（训练后生成）
-│   ├── model.pth           # PyTorch 模型权重
-│   ├── model_structure.json # 模型结构信息
-│   └── vocab.json          # 词汇表文件
-└── training_history.png    # 训练历史图表（训练后生成）
+└── ../saved_models/        # 保存的模型文件（训练后生成，位于项目根目录）
+    └── transformer/        # Transformer模型专用目录
+        ├── model.pth           # PyTorch 模型权重
+        ├── model_structure.json # 模型结构信息
+        └── vocab.json          # 词汇表文件
+
 ```
 
 ## 🚀 快速开始
@@ -59,7 +60,7 @@ python train_and_save.py
 - 创建并训练 Transformer 模型
 - 评估模型性能
 - 保存训练好的模型
-- 生成训练历史图表
+
 
 #### 步骤 3: 模型推理
 ```bash
@@ -67,8 +68,7 @@ python inference.py
 ```
 - 加载保存的模型
 - 进行情感分析预测
-- 交互式预测模式
-- 可视化预测结果
+- 示例测试和准确率统计
 
 ## 🧠 模型架构
 
@@ -104,7 +104,8 @@ python inference.py
 - 序列填充和截断
 
 ### 模型定义 (`model.py`)
-- LSTM 网络架构定义
+- Transformer 网络架构定义
+- 位置编码实现
 - 模型保存和加载功能
 - 准确率计算函数
 - 模型结构信息管理
@@ -119,8 +120,7 @@ python inference.py
 ### 推理应用 (`inference.py`)
 - 模型加载和恢复
 - 单句情感预测
-- 预测结果可视化
-- 交互式预测模式
+- 预测结果展示
 - 示例测试和准确率统计
 
 ## 🔧 技术实现
@@ -138,7 +138,7 @@ python inference.py
 - 完整的错误处理和异常管理
 - 详细的训练过程监控
 - 灵活的模型配置选项
-- 交互式预测界面
+- 示例预测测试
 
 ## 📈 性能表现
 
@@ -154,12 +154,12 @@ python inference.py
 在 `train_and_save.py` 的 `main()` 函数中修改：
 
 ```python
-EPOCHS = 20                # 训练轮数
+EPOCHS = 100               # 训练轮数
 LEARNING_RATE = 0.001      # 学习率
-BATCH_SIZE = 64            # 批次大小
-EMBEDDING_DIM = 200        # 词嵌入维度
-HIDDEN_DIM = 256           # LSTM隐藏层维度
-MAX_VOCAB_SIZE = 50000     # 词汇表大小
+BATCH_SIZE = 32            # 批次大小
+EMBEDDING_DIM = 128        # 词嵌入维度（必须能被注意力头数整除）
+HIDDEN_DIM = 256           # Transformer隐藏层维度
+MAX_VOCAB_SIZE = 25000     # 词汇表大小
 ```
 
 ### 更改数据集配置
@@ -196,7 +196,7 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 ```
 
 ### Q: 模型保存失败
-**A**: 确保 `saved_models/` 目录存在写入权限，或手动创建该目录。
+**A**: 确保项目根目录下的 `saved_models/transformer/` 目录存在写入权限，或手动创建该目录。
 
 ### Q: 推理时提示找不到模型文件
 **A**: 请先运行 `train_and_save.py` 训练并保存模型。
@@ -205,7 +205,7 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 
 - [PyTorch 官方教程](https://pytorch.org/tutorials/)
 - [IMDB 数据集介绍](https://ai.stanford.edu/~amaas/data/sentiment/)
-- [LSTM 网络详解](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+- [Transformer 网络详解](https://arxiv.org/abs/1706.03762)
 - [Hugging Face Datasets 文档](https://huggingface.co/docs/datasets/)
 - [spaCy 官方文档](https://spacy.io/)
 
@@ -217,15 +217,17 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 python train_and_save.py
 ```
 
-### 交互式预测
+### 示例预测测试
 ```bash
-# 启动交互式预测
+# 运行推理脚本
 python inference.py
 
-# 然后输入句子进行预测
-请输入句子: This movie is absolutely fantastic!
+# 会自动测试多个示例句子，输出如下：
+句子: 'This movie is absolutely fantastic!'
 预测情感: positive
 预测概率: 0.8234
+真实情感: positive
+预测正确: ✓
 ```
 
 ### 批量测试
@@ -244,4 +246,4 @@ python inference.py
 **注意**: 
 - 首次运行时会自动下载 IMDB 数据集（约 80MB），请确保网络连接正常
 - 训练过程需要一定时间，建议在有 GPU 的环境下运行以加速训练
-- 模型文件会保存在 `saved_models/` 目录下，请确保有足够的磁盘空间
+- 模型文件会保存在项目根目录的 `saved_models/transformer/` 目录下，请确保有足够的磁盘空间
