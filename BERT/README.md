@@ -7,8 +7,7 @@
 - 🤖 **预训练模型微调**: 基于`bert-base-uncased`预训练模型进行微调
 - 📊 **完整训练流程**: 包含数据加载、模型训练、验证和测试
 - 🎯 **高性能**: 利用BERT的强大语言理解能力
-- 📈 **可视化**: 提供训练过程可视化和结果分析
-- 🔧 **易于使用**: 提供交互式推理和批量处理功能
+- 🔧 **易于使用**: 提供交互式推理功能
 - 💾 **模型保存**: 自动保存最佳模型和训练信息
 
 ## 环境准备
@@ -25,9 +24,7 @@ pip install -r requirements.txt
 - `transformers`: Hugging Face Transformers库
 - `datasets`: 数据集加载库
 - `numpy`: 数值计算
-- `matplotlib`: 可视化
 - `tqdm`: 进度条
-- `scikit-learn`: 机器学习工具
 
 ## 项目结构
 
@@ -41,8 +38,7 @@ BERT/
 ├── README.md             # 项目说明
 └── saved_models/         # 保存的模型文件（训练后生成）
     ├── bert_sentiment_model_*.pth
-    ├── bert_model_info_*.json
-    └── bert_training_history_*.png
+    └── bert_model_info_*.json
 ```
 
 ## 使用方法
@@ -56,39 +52,20 @@ python train_and_save.py
 训练参数说明：
 - **EPOCHS**: 3（BERT微调通常只需要少量epoch）
 - **LEARNING_RATE**: 2e-5（BERT推荐学习率）
-- **BATCH_SIZE**: 16（可根据GPU内存调整）
+- **BATCH_SIZE**: 32（训练脚本中设置，可根据GPU内存调整）
 - **MAX_LENGTH**: 256（序列最大长度）
 - **MODEL_NAME**: 'bert-base-uncased'
 
 ### 2. 模型推理
 
-#### 交互式预测
-```bash
-python inference.py --interactive
-```
-
-#### 单文本预测
-```bash
-python inference.py --text "This movie is amazing!"
-```
-
-#### 批量文件分析
-```bash
-python inference.py --file input.txt --output results.json
-```
-
-#### 指定模型文件
-```bash
-python inference.py --model saved_models/bert_sentiment_model_20240101_120000.pth --interactive
-```
-
-### 3. 直接运行推理（无参数）
-
 ```bash
 python inference.py
 ```
 
-这将自动查找最新的训练模型并启动交互式模式。
+这将自动查找最新的训练模型并启动交互式预测模式。在交互式模式下，您可以：
+- 输入文本进行情感分析
+- 查看预测结果和置信度
+- 输入 'quit' 或 'exit' 退出程序
 
 ## 模型架构
 
@@ -146,7 +123,6 @@ Linear Classification Layer
 ### 训练监控
 - 实时显示训练/验证损失和准确率
 - 自动保存最佳验证准确率模型
-- 生成训练历史可视化图表
 - 保存详细的模型信息和配置
 
 ## 性能表现
@@ -168,25 +144,21 @@ Linear Classification Layer
 #### `model.py`
 - `BERTSentimentAnalyzer`: 主模型类
 - `binary_accuracy`: 准确率计算函数
-- `save_model_info/load_model_info`: 模型信息保存/加载
+- `save_model_info`: 模型信息保存
 
 #### `data_loader.py`
 - `IMDBDataset`: 自定义数据集类
 - `prepare_data`: 数据准备函数
-- `analyze_text_lengths`: 文本长度分析
 
 #### `train_and_save.py`
 - `train_epoch`: 训练一个epoch
 - `evaluate_epoch`: 评估一个epoch
-- `plot_training_history`: 绘制训练历史
 - `main`: 主训练流程
 
 #### `inference.py`
 - `BERTInference`: 推理类
 - `predict_single`: 单文本预测
-- `predict_batch`: 批量预测
 - `interactive_predict`: 交互式预测
-- `analyze_file`: 文件分析
 
 ## 使用示例
 
@@ -204,10 +176,10 @@ inferencer.load_model()
 result = inferencer.predict_single("This movie is fantastic!")
 print(f"情感: {result['sentiment']}, 概率: {result['probability']:.4f}")
 
-# 批量预测
+# 多个文本预测
 texts = ["I love this movie!", "This is terrible."]
-results = inferencer.predict_batch(texts)
-for i, result in enumerate(results):
+for i, text in enumerate(texts):
+    result = inferencer.predict_single(text)
     print(f"文本{i+1}: {result['sentiment']} ({result['probability']:.4f})")
 ```
 
