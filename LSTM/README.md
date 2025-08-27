@@ -16,11 +16,11 @@ LSTM/
 ├── inference.py            # 模型加载和推理
 ├── requirements.txt        # 项目依赖
 ├── README.md               # 项目说明文档
-├── saved_models/           # 保存的模型文件（训练后生成）
-│   ├── model.pth           # PyTorch 模型权重
-│   ├── model_structure.json # 模型结构信息
-│   └── vocab.json          # 词汇表文件
-└── training_history.png    # 训练历史图表（训练后生成）
+└── saved_models/           # 保存的模型文件（训练后生成）
+    └── lstm/               # LSTM模型专用目录
+        ├── model.pth       # PyTorch 模型权重
+        ├── model_structure.json # 模型结构信息
+        └── vocab.json      # 词汇表文件
 ```
 
 ## 🚀 快速开始
@@ -59,7 +59,7 @@ python train_and_save.py
 - 创建并训练 LSTM 模型
 - 评估模型性能
 - 保存训练好的模型
-- 生成训练历史图表
+
 
 #### 步骤 3: 模型推理
 ```bash
@@ -67,16 +67,16 @@ python inference.py
 ```
 - 加载保存的模型
 - 进行情感分析预测
-- 交互式预测模式
-- 可视化预测结果
+
+
 
 ## 🧠 模型架构
 
 ### LSTM 网络结构
 - **词嵌入层**: 将词汇转换为密集向量表示
 - **LSTM 层**: 处理序列信息，捕获长期依赖关系
-- **全连接层 1**: 128 -> 64 神经元，ReLU 激活
-- **全连接层 2**: 64 -> 1 神经元（二分类输出）
+- **全连接层 1**: hidden_dim -> hidden_dim//2 神经元，ReLU 激活
+- **全连接层 2**: hidden_dim//2 -> 1 神经元（二分类输出）
 - **输出**: Sigmoid 激活函数，输出 0-1 之间的概率
 
 ### 模型参数
@@ -87,7 +87,7 @@ python inference.py
 - **学习率**: 0.001
 - **损失函数**: BCEWithLogitsLoss
 - **批次大小**: 32
-- **训练轮数**: 10（可配置）
+- **训练轮数**: 100（可配置）
 
 ## 📊 功能特性
 
@@ -115,7 +115,7 @@ python inference.py
 - 模型加载和恢复
 - 单句情感预测
 - 预测结果可视化
-- 交互式预测模式
+
 - 示例测试和准确率统计
 
 ## 🔧 技术实现
@@ -125,7 +125,7 @@ python inference.py
 - **Hugging Face Datasets**: 数据集加载
 - **spaCy**: 自然语言处理和分词
 - **NumPy**: 数值计算
-- **Matplotlib**: 数据可视化
+
 - **tqdm**: 进度条显示
 
 ### 关键特性
@@ -133,7 +133,7 @@ python inference.py
 - 完整的错误处理和异常管理
 - 详细的训练过程监控
 - 灵活的模型配置选项
-- 交互式预测界面
+
 
 ## 📈 性能表现
 
@@ -191,7 +191,7 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 ```
 
 ### Q: 模型保存失败
-**A**: 确保 `saved_models/` 目录存在写入权限，或手动创建该目录。
+**A**: 确保 `saved_models/lstm/` 目录存在写入权限，或手动创建该目录。
 
 ### Q: 推理时提示找不到模型文件
 **A**: 请先运行 `train_and_save.py` 训练并保存模型。
@@ -212,15 +212,10 @@ MAX_VOCAB_SIZE = 10000    # 减少词汇表大小
 python train_and_save.py
 ```
 
-### 交互式预测
+### 模型推理
 ```bash
-# 启动交互式预测
+# 运行推理脚本
 python inference.py
-
-# 然后输入句子进行预测
-请输入句子: This movie is absolutely fantastic!
-预测情感: positive
-预测概率: 0.8234
 ```
 
 ### 批量测试
@@ -239,4 +234,4 @@ python inference.py
 **注意**: 
 - 首次运行时会自动下载 IMDB 数据集（约 80MB），请确保网络连接正常
 - 训练过程需要一定时间，建议在有 GPU 的环境下运行以加速训练
-- 模型文件会保存在 `saved_models/` 目录下，请确保有足够的磁盘空间
+- 模型文件会保存在 `saved_models/lstm/` 目录下，请确保有足够的磁盘空间
