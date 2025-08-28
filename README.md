@@ -79,7 +79,7 @@ Sentiment_Analysis/
 
 ### 环境准备
 
-确保系统已安装Python 3.7+，然后安装项目依赖：
+确保系统已安装Python 3.10，然后安装项目依赖：
 
 ```bash
 # 安装基础依赖（适用于所有版本）
@@ -130,7 +130,7 @@ python text_preprocessing_basics.py
 
 ## 技术栈
 
-- **Python 3.7+**: 编程语言
+- **Python 3.10**: 编程语言
 - **PyTorch**: 深度学习框架
 - **Transformers**: Hugging Face预训练模型库
 - **Datasets**: 数据集加载库
